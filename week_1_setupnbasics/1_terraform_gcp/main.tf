@@ -8,15 +8,16 @@ terraform {
 }
 
 provider "google" {
-  project = "mindful-furnace-412108"
-  region  = "us-central1"
+  credentials = file(var.credentials)
+  project     = var.project
+  region      = var.region
 }
 
 resource "google_storage_bucket" "demo-bucket" {
-  name          = "mindful-furnace-412108-terra-bucket"
-  location      = "US"
+  name          = var.gcs_bucket_name
+  location      = var.location
   force_destroy = true
-  
+
 
   lifecycle_rule {
     condition {
@@ -26,4 +27,9 @@ resource "google_storage_bucket" "demo-bucket" {
       type = "AbortIncompleteMultipartUpload"
     }
   }
+}
+
+resource "google_bigquery_dataset" "demo-dataset" {
+  dataset_id = var.bq_dataset_name
+  location   = var.location
 }
